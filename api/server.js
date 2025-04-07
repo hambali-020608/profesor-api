@@ -17,7 +17,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, "docs/api-docs.yaml"));
 // const swaggerDocument = require("./docs/api-docs.json"); // Konversi YAML ke JSON dulu
 
 // Import API routes
-const apiRoutes = require("./routes/api");
+const apiRoutes = require("../routes/api");
 app.use("/", apiRoutes);
 
 // Swagger UI
