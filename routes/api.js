@@ -5,6 +5,7 @@ const { spotidown, SpotifyDown } = require('../function/spotify');
 const { ytdl } = require('../function/youtube');
 const { ddownr } = require('../function/ddownr');
 const { downloadSpotify } = require('../function/spotiLink')
+const {filmApik} = require('../function/lk21')
 const path = require('path')
 const {islamai}= require('../function/muslimAi')
 const {clipto} = require('../function/youtubeDown')
@@ -73,6 +74,16 @@ router.get('/api/muslimai',async(req,res)=>{
     const text = req.query.question
     const response = await islamai(text)
     res.json(response)
+
+
+})
+
+// movie downloader
+
+router.get('/api/movies/v1/box-office',async(req,res)=>{
+    const page = req.query.page
+    const data = await filmApik.BoxOfficeApik(page)
+    res.json(data)
 
 
 })

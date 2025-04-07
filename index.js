@@ -4,24 +4,22 @@ const YAML = require("yamljs");
 const cors = require("cors");
 const path = require("path");
 
+// Load file dokumentasi Swagger
+const swaggerDocument = YAML.load(path.join(__dirname, "docs", "api-docs.yaml"));
+
 const app = express();
-
-// Middleware
-app.use(cors({ origin: '*' }));
+app.use(cors({origin:'*'}))
 app.use(express.json());
-
-// Solusi 1: Gunakan path relatif yang lebih kompatibel
-const swaggerDocument = YAML.load(path.join(__dirname, "docs/api-docs.yaml"));
-
-// Solusi 2: Atau load dokumen secara asynchronous
-// const swaggerDocument = require("./docs/api-docs.json"); // Konversi YAML ke JSON dulu
 
 // Import API routes
 const apiRoutes = require("./routes/api");
 app.use("/", apiRoutes);
 
-// Swagger UI
+// Tambahkan Swagger UI di `/docs`
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Ekspor sebagai Vercel Serverless Function
-module.exports = app;
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server berjalan di http://localhost:${PORT}`);
+    console.log(`Dokumentasi API: http://localhost:${PORT}/docs`);
+});

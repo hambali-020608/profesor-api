@@ -9,9 +9,9 @@
 // // newest_title.map((t)=>{
 // //     console.log(t)
 // // })
-
 const axios = require('axios')
 const cheerio = require('cheerio')
+
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
  
 const lk21 = {
@@ -27,7 +27,9 @@ const lk21 = {
     },
     headers: {
       'Upgrade-Insecure-Requests': '1',
-      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36'
+      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+      'Referer':'https://tv10.lk21official.life',
+
     }
   },
  
@@ -405,7 +407,164 @@ const lk21 = {
         }
       };
     }
+  },
+
+  getTopMovie: async(page)=>{
+    try {
+      const response = await fetch(`https://tv10.lk21official.life/top-movie-today/page/${page}`);
+      const html = await response.text();
+      const $ = cheerio.load(html);
+      
+      // Ambil semua teks dari <script> dalam <article>
+      const scriptsText = $('article script').map((i, el) => $(el).text().trim()).get();
+      
+      // Proses hanya yang valid JSON
+      const scriptsJSON = scriptsText.map(text => {
+          try {
+              // Ambil hanya bagian JSON dengan regex
+              const match = text.match(/\{.*\}/s);
+              if (match) {
+                  return JSON.parse(match[0].replace(/[\u0000-\u001F]+/g, '')); // Hapus karakter kontrol
+              }
+          } catch (error) {
+              console.error('Error parsing JSON:', error);
+          }
+          return null;
+      }).filter(Boolean); // Hapus nilai `null`
+      
+      return scriptsJSON
+      
+    }catch{
+
+    }
+
+  },
+  getLatestMovie: async(page)=>{
+    try {
+      const response = await fetch(`https://tv10.lk21official.life/latest/page/${page}`);
+      const html = await response.text();
+      const $ = cheerio.load(html);
+      
+      // Ambil semua teks dari <script> dalam <article>
+      const scriptsText = $('article script').map((i, el) => $(el).text().trim()).get();
+      
+      // Proses hanya yang valid JSON
+      const scriptsJSON = scriptsText.map(text => {
+          try {
+              // Ambil hanya bagian JSON dengan regex
+              const match = text.match(/\{.*\}/s);
+              if (match) {
+                  return JSON.parse(match[0].replace(/[\u0000-\u001F]+/g, '')); // Hapus karakter kontrol
+              }
+          } catch (error) {
+              console.error('Error parsing JSON:', error);
+          }
+          return null;
+      }).filter(Boolean); // Hapus nilai `null`
+      
+      return scriptsJSON
+      
+    }catch{
+
+    }
+
+  },
+
+  getPopularMovie: async(page)=>{
+    try {
+      const response = await fetch(`https://tv10.lk21official.life/populer/page/${page}`,
+        {
+          headers: lk21.api.headers
+        }
+      );
+      const html = await response.text();
+      const $ = cheerio.load(html);
+      
+      // Ambil semua teks dari <script> dalam <article>
+      const scriptsText = $('article script').map((i, el) => $(el).text().trim()).get();
+      
+      // Proses hanya yang valid JSON
+      const scriptsJSON = scriptsText.map(text => {
+          try {
+              // Ambil hanya bagian JSON dengan regex
+              const match = text.match(/\{.*\}/s);
+              if (match) {
+                  return JSON.parse(match[0].replace(/[\u0000-\u001F]+/g, '')); // Hapus karakter kontrol
+              }
+          } catch (error) {
+              console.error('Error parsing JSON:', error);
+          }
+          return null;
+      }).filter(Boolean); // Hapus nilai `null`
+      
+      return scriptsJSON
+      
+    }catch{
+
+    }
+
   }
+
 };
- 
-module.exports = {lk21}
+
+
+
+const filmApik = {
+BoxOfficeApik:async(page)=>{
+  const response = await fetch(`https://filmapik.now/category/box-office/page/${page}`)
+  const html = await response.text()
+  const $ = cheerio.load(html)
+  const posterUrls = [];
+  const moviesTitle  = []
+  const moviesRating  = []
+$('article.item.movies').each((i, el) => {
+  const poster = $(el).find('img').attr('src');
+  const rating = $(el).find('div.rating').text()
+  const title = $(el).find('h3 a').text(); // atau pakai .attr('title') untuk full title
+  posterUrls.push(poster)
+  moviesTitle.push(title)
+  moviesRating.push(rating)
+});
+
+// console.log(moviesRating)
+return {
+  posterUrls,
+  moviesTitle,
+  moviesRating
+}
+
+
+
+},
+DownloadApik: async()=>{
+
+  const response = await fetch(`https://filmapik.now/${slug}/play`)
+  const data = await response.text()
+  const $ = cheerio.load(data)
+  const links = [];
+  
+  // Karena semua <ul> punya class yang sama dan ID yang sama (tidak valid HTML),
+  // kita bisa loop berdasarkan struktur DOM-nya
+  $('#playeroptions > ul').each((i, el) => {
+      const server = $(el).find('.server_title').text().trim();
+      const li = $(el).find('li.dooplay_player_option');
+      const url = li.attr('data-url');
+      const quality = li.find('.title').text().trim();
+  
+      links.push({
+          server,
+          quality,
+          url
+      });
+  });
+  return links
+
+
+}
+
+
+}
+
+
+//  filmApik.SearchApik(1)
+module.exports = {filmApik}
