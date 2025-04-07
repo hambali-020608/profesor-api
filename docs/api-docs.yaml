@@ -1,0 +1,185 @@
+openapi: 3.0.0
+info:
+  title: PROFESOR API
+  description: This is a free and useful API.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local server
+tags:
+  - name: Downloader 
+    description: API untuk mengunduh apapun.
+  - name: Search 
+    description: API untuk mengunduh apapun.
+  - name: AI
+    description: API untuk fitur AI seperti chatbot atau image generation.
+  - name: Tools
+    description: API untuk berbagai utilitas umum.
+paths:
+  /api/youtube/search:
+    get:
+      summary: Mendapatkan video YouTube
+      tags: 
+      - Search
+      description: Mengembalikan video YouTube sesuai dengan pencarian.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Kata kunci pencarian YouTube
+      responses:
+        "200":
+          description: Berhasil mendapatkan video YouTube
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "abc123"
+                        title:
+                          type: string
+                          example: "Cara Membuat Kopi yang Enak"
+                        url:
+                          type: string
+                          example: "https://youtube.com/watch?v=abc123"
+                        thumbnail:
+                          type: string
+                          example: "https://img.youtube.com/vi/abc123/0.jpg"
+  /api/youtube/v1/download:
+    get:
+      summary: Mendapatkan video YouTube
+      tags: 
+      - Downloader
+      description: Mengembalikan video YouTube sesuai dengan url.
+      parameters:
+        - name: url
+          in: url
+          required: true
+          schema:
+            type: string
+          description: url youtube
+      responses:
+        "200":
+          description: Berhasil mendapatkan video YouTube
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "abc123"
+                        title:
+                          type: string
+                          example: "Cara Membuat Kopi yang Enak"
+                        url:
+                          type: string
+                          example: "https://youtube.com/watch?v=abc123"
+                        thumbnail:
+                          type: string
+                          example: "https://img.youtube.com/vi/abc123/0.jpg"
+                        
+  /api/youtube/v2/download:
+    get:
+      summary: Mendapatkan video YouTube versi 2
+      tags: 
+      - Downloader
+      description: Mengembalikan video YouTube sesuai dengan url.
+      parameters:
+        - name: url
+          in: query
+          required: true
+          schema:
+            type: string
+          description: url youtube
+      responses:
+        "200":
+          description: Berhasil mendapatkan video YouTube
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "abc123"
+                        title:
+                          type: string
+                          example: "Cara Membuat Kopi yang Enak"
+                        url:
+                          type: string
+                          example: "https://youtube.com/watch?v=abc123"
+                        thumbnail:
+                          type: string
+                          example: "https://img.youtube.com/vi/abc123/0.jpg"
+                        
+  /api/youtube/v3/download:
+    get:
+      summary: Mendapatkan video YouTube versi 3
+      tags: 
+      - Downloader
+      description: Mengembalikan video YouTube sesuai dengan url.
+      parameters:
+        - name: url
+          in: query
+          required: true
+          schema:
+            type: string
+          description: url youtube
+      responses:
+        "200":
+          description: Berhasil mendapatkan video YouTube
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "abc123"
+                        title:
+                          type: string
+                          example: "Cara Membuat Kopi yang Enak"
+                        url:
+                          type: string
+                          example: "https://youtube.com/watch?v=abc123"
+                        thumbnail:
+                          type: string
+                          example: "https://img.youtube.com/vi/abc123/0.jpg"
+                        
