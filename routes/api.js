@@ -11,6 +11,9 @@ const {clipto} = require('../function/youtubeDown')
 const {sstik} = require('../function/tiktok')
 // Simulasi data produk
 // API Endpoint: Mendapatkan semua produk
+router.get('/', async (req, res) => {
+    res.send('halo')
+});
 router.get('/api/youtube/search', async (req, res) => {
     const videoUrl = req.query.q;
     const r = await yts(videoUrl)
