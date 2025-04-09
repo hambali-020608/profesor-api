@@ -87,5 +87,12 @@ router.get('/api/movies/v1/box-office',async(req,res)=>{
 
 
 })
+router.get('/api/movies/v1/trending',async(req,res)=>{
+    const page = req.query.page
+    const data = await filmApik.TrendingApik(page)
+    res.json(data)
+
+
+})
 
 module.exports = router;
