@@ -94,5 +94,12 @@ router.get('/api/movies/v1/trending',async(req,res)=>{
 
 
 })
+router.get('/api/movies/v1/download',async(req,res)=>{
+    const slug = req.query.slug
+    const data = await filmApik.DownloadApik(slug)
+    res.json(data)
+
+
+})
 
 module.exports = router;
