@@ -143,7 +143,8 @@ SearchApik: async(search)=>{
 
   $('.result-item').each((i, el) => {
     const title = $(el).find('.title a').text().trim();
-    const detailUrl = $(el).find('.title a').attr('href');
+    let detailUrl = $(el).find('.title a').attr('href');
+    detailUrl = detailUrl.replace('https://filmapik.now/nonton-film-')
     const poster = $(el).find('img').attr('src');
     const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
     let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
