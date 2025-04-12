@@ -133,8 +133,35 @@ DownloadApik: async(slug)=>{
   // return links
 
 
-}
+},
 
+SearchApik: async(search)=>{
+  const response = await fetch(`https://filmapik.now/?s=${search}`);
+  const html = await response.text();
+  const $ = cheerio.load(html);
+  const data = [];
+
+  $('.result-item').each((i, el) => {
+    const title = $(el).find('.title a').text().trim();
+    const detailUrl = $(el).find('.title a').attr('href');
+    const poster = $(el).find('img').attr('src');
+    const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
+    let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
+    synopsis = synopsis.replace('–','')
+    synopsis= synopsis.replace('ULASAN :','')
+    data.push({
+      title,
+      detailUrl,
+      poster,
+      rating,
+      synopsis,
+    });
+  });
+
+  return data;
+
+
+}
 
 }
 

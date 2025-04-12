@@ -101,5 +101,12 @@ router.get('/api/movies/v1/download',async(req,res)=>{
 
 
 })
+router.get('/api/movies/v1/search',async(req,res)=>{
+    const query = req.query.q
+    const data = await filmApik.SearchApik(query)
+    res.json(data)
+
+
+})
 
 module.exports = router;
