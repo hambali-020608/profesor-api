@@ -64,6 +64,7 @@ DownloadApik: async(slug)=>{
   const $ = cheerio.load(data)
   const links = [];
   
+  
   // Karena semua <ul> punya class yang sama dan ID yang sama (tidak valid HTML),
   // kita bisa loop berdasarkan struktur DOM-nya
   $('#playeroptions > ul').each((i, el) => {
@@ -71,14 +72,65 @@ DownloadApik: async(slug)=>{
       const li = $(el).find('li.dooplay_player_option');
       const url = li.attr('data-url');
       const quality = li.find('.title').text().trim();
-  
+      
+
       links.push({
           server,
           quality,
           url
       });
   });
-  return links
+  let title = $('h1[itemprop="name"]').text().trim();
+ title = title.replace('Nonton Film',"")
+  title = title.replace('Filmapik','')
+
+  const genres = [];
+  $('.sgeneros a').each((i, el) => {
+    genres.push($(el).text().trim());
+  });
+
+  let director = $('span.tagline:contains("Director") a').first().text().trim();
+  
+  const actors = [];
+  $('span[itemprop="actor"] a').each((i, el) => {
+    actors.push($(el).text().trim());
+  });
+
+  const country = $('span.country:contains("Country") a').text().trim();
+
+  let duration = $('span.runtime').text().replace('Duration', '').trim();
+   duration = duration.replace(':', '').trim();
+
+  const quality = $('span.country:contains("Quality") a').text().trim();
+
+  const releaseYear = $('span.country:contains("Release") a').text().trim();
+
+  const imdb = $('#repimdb strong').text().trim();
+
+  const resolution = $('span.country:contains("Resolusi") a').text().trim();
+
+  const synopsis = $('.sbox h2:contains("Synopsis")')
+    .next('.wp-content')
+    .text()
+    .trim();
+
+  return {
+    title,
+    genres,
+    director,
+    actors,
+    country,
+    duration,
+    quality,
+    releaseYear,
+    imdb,
+    resolution,
+    synopsis,
+    links
+  };
+
+
+  // return links
 
 
 }
