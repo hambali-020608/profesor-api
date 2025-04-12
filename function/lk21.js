@@ -13,58 +13,46 @@ const cheerio = require('cheerio')
 
 
 const filmApik = {
-BoxOfficeApik:async(page)=>{
-  const response = await fetch(`https://filmapik.now/category/box-office/page/${page}`)
-  const html = await response.text()
-  const $ = cheerio.load(html)
-  const posterUrls = [];
-  const moviesTitle  = []
-  const moviesRating  = []
-$('article.item.movies').each((i, el) => {
-  const poster = $(el).find('img').attr('src');
-  const rating = $(el).find('div.rating').text()
-  const title = $(el).find('h3 a').text(); // atau pakai .attr('title') untuk full title
-  posterUrls.push(poster)
-  moviesTitle.push(title)
-  moviesRating.push(rating)
-});
-
-// console.log(moviesRating)
-return {
-  posterUrls,
-  moviesTitle,
-  moviesRating
-}
-
-
-
-},
-TrendingApik:async(page)=>{
-  const response = await fetch(`https://filmapik.now/trending-2/page/${page}`)
-  const html = await response.text()
-  const $ = cheerio.load(html)
-  const posterUrls = [];
-  const moviesTitle  = []
-  const moviesRating  = []
-$('article.item.movies').each((i, el) => {
-  const poster = $(el).find('img').attr('src');
-  const rating = $(el).find('div.rating').text()
-  const title = $(el).find('h3 a').text(); // atau pakai .attr('title') untuk full title
-  posterUrls.push(poster)
-  moviesTitle.push(title)
-  moviesRating.push(rating)
-});
-
-// console.log(moviesRating)
-return {
-  posterUrls,
-  moviesTitle,
-  moviesRating
-}
-
-
-
-},
+  BoxOfficeApik: async (page) => {
+    const data = [];
+    const response = await fetch(`https://filmapik.now/category/box-office/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+  
+    $('article.item.movies').each((i, el) => {
+      const poster = $(el).find('img').attr('src');
+      const rating = $(el).find('div.rating').text();
+      const title = $(el).find('h3 a').text();
+      
+      data.push({
+        posterUrls: poster,
+        moviesTitle: title,
+        moviesRating: rating
+      });
+    });
+  
+    return { data };
+  },
+  TrendingApik: async (page) => {
+    let data = [];
+    const response = await fetch(`https://filmapik.now/trending-2/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    $('article.item.movies').each((i, el) => {
+      const poster = $(el).find('img').attr('src');
+      const rating = $(el).find('div.rating').text();
+      const title = $(el).find('h3 a').text();
+      
+      data.push({
+        posterUrls: poster,
+        moviesTitle: title,
+        moviesRating: rating
+      });
+    });
+  
+    return { data };
+  },
 
 DownloadApik: async(slug)=>{
   const cleanedSlug = slug.toLowerCase()
