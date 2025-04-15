@@ -53,6 +53,26 @@ const filmApik = {
   
     return { data };
   },
+  LatestApik: async (page) => {
+    let data = [];
+    const response = await fetch(`https://filmapik.now/latest/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    $('article.item.movies').each((i, el) => {
+      const poster = $(el).find('img').attr('src');
+      const rating = $(el).find('div.rating').text();
+      const title = $(el).find('h3 a').text();
+      
+      data.push({
+        posterUrls: poster,
+        moviesTitle: title,
+        moviesRating: rating
+      });
+    });
+  
+    return { data };
+  },
 
 DownloadApik: async(slug)=>{
   const cleanedSlug = slug.toLowerCase()
@@ -168,4 +188,8 @@ SearchApik: async(search)=>{
 }
 
 
+
+const layarDrama={
+  
+}
  module.exports = {filmApik}
