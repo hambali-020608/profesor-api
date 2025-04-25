@@ -162,7 +162,7 @@ SearchApik: async(search)=>{
   const data = [];
 
   $('.result-item').each((i, el) => {
-    const title = $(el).find('.title a').text().trim();
+    let title = $(el).find('.title a').text().trim();
     title = title.replace('Nonton Film')
     let detailUrl = $(el).find('.title a').attr('href');
     const poster = $(el).find('img').attr('src');
