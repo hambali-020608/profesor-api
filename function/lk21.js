@@ -78,7 +78,7 @@ DownloadApik: async(slug)=>{
   const cleanedSlug = slug.toLowerCase()
   .replace(/\s*\((\d{4})\)/, '-$1') // ganti (2023) jadi -2023
   .replace(/\s+/g, '-')             // ganti spasi dengan tanda -
-  .replace(/[^a-z0-9\-]/g, '');     // hilangkan karakter selain huruf, angka, dan -
+  .replace(/[^a-z0-9\-&]/g, '');     // hilangkan karakter selain huruf, angka, dan -
   const response = await fetch(`https://filmapik.now/nonton-film-${cleanedSlug}-subtitle-indonesia/play`)
   const data = await response.text()
   const $ = cheerio.load(data)
@@ -163,9 +163,8 @@ SearchApik: async(search)=>{
 
   $('.result-item').each((i, el) => {
     const title = $(el).find('.title a').text().trim();
-
-    // let detailUrl = $(el).find('.title a').attr('href');
-    detailUrl = title.replace('Nonton Film')
+    title = title.replace('Nonton Film')
+    let detailUrl = $(el).find('.title a').attr('href');
     const poster = $(el).find('img').attr('src');
     const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
     let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
