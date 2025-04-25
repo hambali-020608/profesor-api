@@ -163,7 +163,7 @@ SearchApik: async(search)=>{
 
   $('.result-item').each((i, el) => {
     let title = $(el).find('.title a').text().trim();
-    title = title.replace('Nonton Film')
+    title = title.replace('Nonton Film',"")
     let detailUrl = $(el).find('.title a').attr('href');
     const poster = $(el).find('img').attr('src');
     const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
