@@ -4,14 +4,14 @@ const yts = require( 'yt-search' );
 const { spotidown, SpotifyDown } = require('../function/spotify');
 const { ytdl } = require('../function/youtube');
 const { ddownr } = require('../function/ddownr');
-const { downloadSpotify } = require('../function/spotiLink')
+const { downloadSpotify,spotiDown } = require('../function/spotiLink')
 const {filmApik} = require('../function/lk21')
 const path = require('path')
 const {islamai}= require('../function/muslimAi')
 const {clipto} = require('../function/youtubeDown')
 const {sstik} = require('../function/tiktok')
-// Simulasi data produk
-// API Endpoint: Mendapatkan semua produk
+const {savetube} = require('../function/savetube')
+
 router.get('/', async (req, res) => {
     res.send('halo')
 });
@@ -42,6 +42,12 @@ router.get('/api/youtube/v3/download',async(req,res)=>{
     const video = await clipto(url)
     res.json(video)
 })
+router.get('/api/youtube/v4/download',async(req,res)=>{
+    const url = req.query.url
+    const format = req.query.format
+    const video = await savetube.download(url,format)
+    res.json(video)
+})
 
 // search spotify
 router.get('/api/spotify/search',async(req,res)=>{
@@ -51,13 +57,21 @@ await downloadSpotify.download()
 res.json(downloadSpotify.metadata)
 })
 // download spotify
-router.get('/api/spotify/download',async(req,res)=>{
+router.get('/api/spotify/v1/download',async(req,res)=>{
 const spotiyUrl= req.query.url
 const music = await downloadSpotify(spotiyUrl)
 res.json(music)
 
 
 })
+router.get('/api/spotify/v2/download',async(req,res)=>{
+const spotiyUrl= req.query.url
+const music = await spotiDown.download(spotiyUrl)
+res.json(music)
+
+
+})
+
 
 // tiktok downloader 1
 router.get('/api/tik-down/v1',async(req,res)=>{
