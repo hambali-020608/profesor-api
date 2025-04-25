@@ -163,8 +163,8 @@ SearchApik: async(search)=>{
 
   $('.result-item').each((i, el) => {
     let title = $(el).find('.title a').text().trim();
-    title = title.replace('Nonton Film',"")
-    let detailUrl = $(el).find('.title a').attr('href');
+    let detailUrl = title.replace('Nonton Film',"")
+    detailUrl = title.replace('Subtitle Indonesia',"")
     const poster = $(el).find('img').attr('src');
     const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
     let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
