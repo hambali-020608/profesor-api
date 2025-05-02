@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const yts = require( 'yt-search' );
+const {layarDrama} = require('../function/layardrama')
+
 const { spotidown, SpotifyDown } = require('../function/spotify');
 const { ytdl } = require('../function/youtube');
 const { ddownr } = require('../function/ddownr');
@@ -125,6 +127,13 @@ router.get('/api/movies/v1/download',async(req,res)=>{
 router.get('/api/movies/v1/search',async(req,res)=>{
     const query = req.query.q
     const data = await filmApik.SearchApik(query)
+    res.json(data)
+
+
+})
+router.get('/api/movies/v2/search',async(req,res)=>{
+    const query = req.query.q
+    const data = await layarDrama.SearchMovies(query)
     res.json(data)
 
 
