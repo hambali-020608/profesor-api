@@ -37,7 +37,7 @@ const layarDrama = {
         });
     
         return movies
-        // console.log(data)
+        // console.log(movies)
         
     },
     StreamMovies:async(slug)=>{
@@ -56,6 +56,6 @@ const layarDrama = {
 
 }
 
-// layarDrama.SearchMovies('deadpool')
+// layarDrama.SearchMovies('pabrik gula')
 module.exports ={layarDrama}
 

@@ -139,6 +139,7 @@ DownloadApik: async(slug)=>{
     genres,
     director,
     actors,
+    source:'filmapik',
     country,
     duration,
     quality,
@@ -175,6 +176,7 @@ SearchApik: async(search)=>{
       detailUrl,
       poster,
       rating,
+      source:'filmapik',
       synopsis,
     });
   });

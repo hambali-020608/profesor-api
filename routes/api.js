@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const yts = require( 'yt-search' );
-const {layarDrama} = require('../function/layardrama')
+// const {layarDrama} = require('../function/layardrama')
+const {justtalk} = require('../function/justtalk')
 
 const { spotidown, SpotifyDown } = require('../function/spotify');
 const { ytdl } = require('../function/youtube');
@@ -131,9 +132,16 @@ router.get('/api/movies/v1/search',async(req,res)=>{
 
 
 })
+router.get('/api/movies/v2/streaming',async(req,res)=>{
+    const slug = req.query.slug
+    const data = await justtalk.streaming(slug)
+    res.json(data)
+
+
+})
 router.get('/api/movies/v2/search',async(req,res)=>{
     const query = req.query.q
-    const data = await layarDrama.SearchMovies(query)
+    const data = await justtalk.search(query)
     res.json(data)
 
 
