@@ -1,6 +1,54 @@
 const cheerio = require('cheerio')
 
 const justtalk= {
+    Movies:async(page)=>{
+        let movies = []
+        const response = await fetch(`https://www.justtalkingbooks.com/page/${page}`)
+        const data = await response.text()
+    const $ = cheerio.load(data)
+    
+    $('.gmr-item-modulepost').each((i, el) => {
+      const moviesTitle = $(el).find('h2.entry-title a').text().trim();
+      const posterUrls = $(el).find('img.wp-post-image').attr('src');
+
+      if (moviesTitle && posterUrls) {
+        movies.push({ moviesTitle, posterUrls });
+      }
+    });
+
+    // console.log(result);
+    return movies
+  
+
+    },
+
+    latestMovies:async(page=1)=>{
+        let movies = []
+        const response = await fetch(`https://www.justtalkingbooks.com/page/${page}`)
+        const data = await response.text()
+    const $ = cheerio.load(data)
+       const articles = $('#gmr-main-load article');
+
+    articles.each((i, article) => {
+      const titleTag = $(article).find('h2.entry-title a');
+      const imgTag = $(article).find('img.wp-post-image');
+
+      const title = titleTag.text().trim() || 'N/A';
+      const poster = imgTag.attr('src') || 'N/A';
+      movies.push({
+        moviesTitle:title,
+        posterUrls:poster
+      })
+
+
+
+    //   console.log(`Title: ${title}`);
+    //   console.log(`Poster: ${poster}`);
+    //   console.log('---');
+    });
+
+        return movies
+    },
     search:async(query)=>{
         const response = await fetch(`https://www.justtalkingbooks.com/?s=${query}&post_type%5B%5D=post&post_type%5B%5D=tv`)
         const data = await response.text()
@@ -23,7 +71,7 @@ const justtalk= {
     
             movies.push({
                 title,
-                link,
+                // link,
                 image,
                 rating,
                 duration,

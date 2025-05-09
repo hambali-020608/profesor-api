@@ -122,12 +122,26 @@ router.get('/api/movies/v1/download',async(req,res)=>{
     const slug = req.query.slug
     const data = await filmApik.DownloadApik(slug)
     res.json(data)
-
-
+    
+    
 })
 router.get('/api/movies/v1/search',async(req,res)=>{
     const query = req.query.q
     const data = await filmApik.SearchApik(query)
+    res.json(data)
+    
+    
+})
+router.get('/api/movies/v2/latest',async(req,res)=>{
+    const page = req.query.page
+    const data = await justtalk.latestMovies(page)
+    res.json(data)
+
+
+})
+router.get('/api/movies/v2/movies',async(req,res)=>{
+    const page = req.query.page
+    const data = await justtalk.Movies(page)
     res.json(data)
 
 
