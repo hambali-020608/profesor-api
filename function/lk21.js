@@ -11,6 +11,18 @@ const cheerio = require('cheerio')
 // //     console.log(t)
 // // })
 
+function slugify(str) {
+  return decodeURIComponent(str)        // ubah %20 jadi spasi, dll
+    .replace(/\((\d{4})\)/, '-$1')      // ubah (2024) → -2024
+    .replace(/&/g, '')                  // hilangkan &
+    .replace(/\s+/g, '-')               // ganti semua spasi jadi -
+    .replace(/[^a-z0-9\-]/gi, '')       // hapus semua karakter aneh
+    .replace(/-+/g, '-')                // gabungkan double/triple - jadi satu
+    .replace(/^-|-$/g, '')              // hapus tanda - di awal/akhir
+    .toLowerCase();                    // ubah jadi lowercase
+}
+
+
 
 const filmApik = {
   BoxOfficeApik: async (page) => {
@@ -75,12 +87,7 @@ const filmApik = {
   },
 
 DownloadApik: async(slug)=>{
-  const cleanedSlug = slug.toLowerCase()
-    .replace(/\s*\((\d{4})\)/, '-$1')
-  .replace(/\s+/g, '-')
-  .replace(/[^a-z0-9\-]/gi, '')
-  .replace(/-+/g, '-')
-  .replace(/^-|-$/g, '');
+  const cleanedSlug = slugify(slug)
   const response = await fetch(`https://filmapik.now/nonton-film-${cleanedSlug}-subtitle-indonesia/play`)
   const data = await response.text()
   const $ = cheerio.load(data)
