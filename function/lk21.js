@@ -99,6 +99,7 @@ DownloadApik: async(slug)=>{
       links.push({
           server,
           quality,
+          cleanedSlug,
           url
       });
   });
