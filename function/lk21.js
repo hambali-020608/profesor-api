@@ -10,7 +10,6 @@ const cheerio = require('cheerio')
 // // newest_title.map((t)=>{
 // //     console.log(t)
 // // })
-
 function slugify(str) {
   return decodeURIComponent(str)        // ubah %20 jadi spasi, dll
     .replace(/\((\d{4})\)/, '-$1')      // ubah (2024) → -2024
@@ -21,7 +20,6 @@ function slugify(str) {
     .replace(/^-|-$/g, '')              // hapus tanda - di awal/akhir
     .toLowerCase();                    // ubah jadi lowercase
 }
-
 
 
 const filmApik = {
@@ -87,7 +85,7 @@ const filmApik = {
   },
 
 DownloadApik: async(slug)=>{
-  const cleanedSlug = slugify(slug)
+  const cleanedSlug = slugify(slug)        // hilangkan semua kecuali huruf, angka, dan tanda minus
   const response = await fetch(`https://filmapik.now/nonton-film-${cleanedSlug}-subtitle-indonesia/play`)
   const data = await response.text()
   const $ = cheerio.load(data)
@@ -148,8 +146,6 @@ DownloadApik: async(slug)=>{
     genres,
     director,
     actors,
-          cleanedSlug,
-
     source:'filmapik',
     country,
     duration,
