@@ -12,13 +12,13 @@ const cheerio = require('cheerio')
 // // })
 function slugify(str) {
   return str        // ubah %20 jadi spasi, dll
-    .replace(/\((\d{4})\)/, '-$1')      // ubah (2024) → -2024
-    .replace(/&/g, '')                  // hilangkan &
-    .replace(/\s+/g, '-')               // ganti semua spasi jadi -
-    .replace(/[^a-z0-9\-]/gi, '')       // hapus semua karakter aneh
-    .replace(/-+/g, '-')                // gabungkan double/triple - jadi satu
-    .replace(/^-|-$/g, '')              // hapus tanda - di awal/akhir
-    .toLowerCase();                    // ubah jadi lowercase
+    .replace(/&/g, '')                  // hapus &
+    .replace(/\((\d{4})\)/g, '-$1')     // ubah (2024) → -2024
+    .replace(/\s+/g, '-')               // ubah semua spasi jadi -
+    .replace(/[^a-z0-9\-]/gi, '')       // hapus karakter selain huruf/angka/-
+    .replace(/-+/g, '-')                // gabungkan tanda - berulang
+    .replace(/^-|-$/g, '')              // hapus - di awal/akhir
+    .toLowerCase();
 }
 
 
