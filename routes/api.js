@@ -15,7 +15,7 @@ const {clipto} = require('../function/youtubeDown')
 const {sstik} = require('../function/tiktok')
 const {savetube} = require('../function/savetube')
 function slugify(str) {
-  return decodeURIComponent(str)        // ubah %20 jadi spasi, dll
+  return str// ubah %20 jadi spasi, dll
     .replace(/\((\d{4})\)/, '-$1')      // ubah (2024) → -2024
     .replace(/&/g, '')                  // hilangkan &
     .replace(/\s+/g, '-')               // ganti semua spasi jadi -
