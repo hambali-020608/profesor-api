@@ -76,7 +76,7 @@ const filmApik = {
 
 DownloadApik: async(slug)=>{
   // const cleanedSlug = slugify(slug)        // hilangkan semua kecuali huruf, angka, dan tanda minus
-  const response = await fetch(`https://filmapik.now/nonton-film-${cleanedSlug}-subtitle-indonesia/play`)
+  const response = await fetch(`https://filmapik.now/nonton-film-${slug}-subtitle-indonesia/play`)
   const data = await response.text()
   const $ = cheerio.load(data)
   const links = [];
@@ -140,7 +140,7 @@ DownloadApik: async(slug)=>{
     country,
     duration,
     quality,
-    cleanedSlug,
+    slug,
     releaseYear,
     imdb,
     resolution,
