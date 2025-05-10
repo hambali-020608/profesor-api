@@ -99,7 +99,6 @@ DownloadApik: async(slug)=>{
       links.push({
           server,
           quality,
-          cleanedSlug,
           url
       });
   });
@@ -142,6 +141,8 @@ DownloadApik: async(slug)=>{
     genres,
     director,
     actors,
+          cleanedSlug,
+
     source:'filmapik',
     country,
     duration,
