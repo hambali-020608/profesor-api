@@ -15,7 +15,7 @@ const {clipto} = require('../function/youtubeDown')
 const {sstik} = require('../function/tiktok')
 const {savetube} = require('../function/savetube')
 function slugify(str) {
-  return str       // ubah %20 jadi spasi, dll
+  return decodeURIComponent(str)        // ubah %20 jadi spasi, dll
     .replace(/\((\d{4})\)/, '-$1')      // ubah (2024) → -2024
     .replace(/&/g, '')                  // hilangkan &
     .replace(/\s+/g, '-')               // ganti semua spasi jadi -
@@ -69,6 +69,15 @@ const downloadSpotify = new SpotifyDown(spotiyUrl)
 await downloadSpotify.download()
 res.json(downloadSpotify.metadata)
 })
+
+// download spotify 2
+router.get('/api/spotify/download',async(req,res)=>{
+const spotiyUrl= req.query.url
+const downloadSpotify = new SpotifyDown(spotiyUrl)
+await downloadSpotify.downloadLink()
+res.json(downloadSpotify.metadata)
+})
+
 // download spotify
 router.get('/api/spotify/v1/download',async(req,res)=>{
 const spotiyUrl= req.query.url
@@ -130,8 +139,7 @@ router.get('/api/movies/v1/latest',async(req,res)=>{
 })
 router.get('/api/movies/v1/download',async(req,res)=>{
     const slug = req.query.slug
-    const cleanedSlug = slugify(slug)
-    const data = await filmApik.DownloadApik(cleanedSlug)
+    const data = await filmApik.DownloadApik(slug)
     res.json(data)
     
     

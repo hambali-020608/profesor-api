@@ -21,6 +21,14 @@ class SpotifyDown {
             }
       }
     }
+
+    async downloadLink(){
+              const url = await fetch(`https://api.siputzx.my.id/api/d/spotify?url=${this.query}`)
+              const musicData = await url.json()
+              this.metadata.push(musicData)
+
+
+    }
   
   }
 
