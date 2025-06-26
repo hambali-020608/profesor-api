@@ -91,7 +91,7 @@ const justtalk= {
 
     streaming:async(slug,player=1)=>{
         const cleanedSlug = slug.toLowerCase()
-  .replace(/\s*\((\d{4})\)/, '-$1')    // ganti (2023) jadi -2023
+  .replace(/\s*\((\d{4})\)/, '')    // ganti (2023) jadi -2023
   .replace(/\s+/g, '-')                // ganti spasi dengan tanda -
   .replace(/[^a-z0-9\-]/g, '');        // hilangkan semua kecuali huruf, angka, dan tanda minus// hilangkan karakter selain huruf, angka, dan -
         const response = await fetch(`${api}/${cleanedSlug}/?player=${player}`)
