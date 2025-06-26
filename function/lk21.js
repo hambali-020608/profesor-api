@@ -1,6 +1,7 @@
 // import * as cheerio from 'cheerio';
 const cheerio = require('cheerio')
 
+
 // const response = await fetch('https://tv2.lk21official.cc')
 // const html = await response.text()
 // const $ = cheerio.load(html)
@@ -13,6 +14,8 @@ const cheerio = require('cheerio')
 
 
 const filmApik = {
+
+
   BoxOfficeApik: async (page) => {
     const data = [];
     const response = await fetch(`https://filmapik.now/category/box-office/page/${page}`);
