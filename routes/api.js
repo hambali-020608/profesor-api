@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const {Spotimp3} = require('../function/spotify')
 const yts = require( 'yt-search' );
 // const {layarDrama} = require('../function/layardrama')
 const {justtalk} = require('../function/justtalk')
@@ -94,6 +95,14 @@ res.json(music)
 
 })
 
+router.get('/api/spotify/v3/download',async(req,res)=>{
+const spotiyUrl= req.query.url
+const music = await Spotimp3(spotiyUrl)
+res.json(music)
+  
+}
+)
+
 
 // tiktok downloader 1
 router.get('/api/tik-down/v1',async(req,res)=>{
@@ -167,7 +176,7 @@ router.get('/api/movies/v2/movies',async(req,res)=>{
 })
 router.get('/api/movies/v2/streaming',async(req,res)=>{
     const slug = req.query.slug
-    
+    console.log(slug)
     const data = await justtalk.streaming(slug)
     res.json(data)
 
@@ -180,5 +189,6 @@ router.get('/api/movies/v2/search',async(req,res)=>{
 
 
 })
+
 
 module.exports = router;

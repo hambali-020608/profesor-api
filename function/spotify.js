@@ -1,45 +1,55 @@
-class SpotifyDown {
-    constructor(query) {
-      this.query = query;
-      this.metadata = []
-    }
-  
-    async download() {
-      const response = await fetch(
-        `https://api.agatz.xyz/api/spotify?message=${this.query}`
-      );
-      const data = await response.json();
-      const musicList = data.data.slice(0,3)
-      for (const music  of musicList){
-            try{
-                const url = await fetch(`https://api.siputzx.my.id/api/d/spotify?url=${music.externalUrl}`)
-                const musicData = await url.json()
-                this.metadata.push(musicData)
-                
-            }catch{
+const axios = require("axios");
 
-            }
+
+
+
+async function Spotimp3(url) {
+  try {
+    // Step 1: Ambil detail lagu
+    const resSongDetail = await axios.get(
+      `https://spotmp3.app/api/song-details?url=${encodeURIComponent(url)}`,
+      {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36",
+          Referer: "https://spotmp3.app/",
+        },
+        timeout: 20000,
+      }
+    );
+
+    // console.log("Song Detail:", resSongDetail.data);
+
+    // Step 2: Request download
+    const resDownload = await axios.post(
+      "https://spotmp3.app/api/download",
+      { url }, // body (JSON)
+      {
+        responseType: "arraybuffer",
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36",
+          Referer: "https://spotmp3.app/",
+          "Content-Type": "application/json",
+        },
+        timeout: 20000,
+      }
+    );
+
+    // console.log("Download Info:", resDownload.data);
+
+    return{
+      status: true,
+      data:{
+        detailSongs: resSongDetail.data,
+        downloadBinary: resDownload.data
       }
     }
-
-    async downloadLink(){
-              const url = await fetch(`https://api.siputzx.my.id/api/d/spotify?url=${this.query}`)
-              const musicData = await url.json()
-              this.metadata.push(musicData)
-
-
-    }
-  
+  } catch (err) {
+    console.error("Axios error:", err.message);
   }
+}
 
+// Spotimp3("https://open.spotify.com/track/26KhLgFuPymkm1uiZkc6Rv")
+module.exports = { Spotimp3 };
 
-  
-  
-  // Contoh Penggunaan
-//   (async () => {
-//     const music = new SpotifyDown("djo end of beginning");
-//     await music.download();
-//     console.log(music.metadata); // Output: Metadata semua lagu
-//   })();
-  
-module.exports = {SpotifyDown}
