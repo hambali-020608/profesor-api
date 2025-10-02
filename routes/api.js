@@ -109,8 +109,12 @@ router.get('/api/spotify/v3/download', async (req, res) => {
       return res.status(500).json({ error: "Failed to download track" });
     }
 
+    const title = Array.isArray(musicDetail) 
+  ? musicDetail[0]?.title 
+  : musicDetail.data?.[0]?.title || "track";
+
     res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader("Content-Disposition", `attachment; filename=${musicDetail.data[0].title}.mp3`);
+    res.setHeader("Content-Disposition", `attachment; filename=${title}.mp3`);
     return res.send(Buffer.from(music));
   } catch (err) {
     console.error(err);
