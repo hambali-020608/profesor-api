@@ -110,7 +110,7 @@ router.get('/api/spotify/v3/download', async (req, res) => {
     }
 
     res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader("Content-Disposition", `attachment; filename=${musicDetail.data.title}.mp3`);
+    res.setHeader("Content-Disposition", `attachment; filename=${musicDetail.data[0].title}.mp3`);
     return res.send(Buffer.from(music));
   } catch (err) {
     console.error(err);
