@@ -6,7 +6,7 @@ class Spotimp3{
 
   
   
-  async getDetail(q){
+  async getDetail(q,page=1,limit=3){
     try {
       // Step 1: Ambil detail lagu
       const resSongDetail = await axios.get(
@@ -21,11 +21,25 @@ class Spotimp3{
           timeout: 20000,
         }
       );
-const songsDetail = Array.isArray(resSongDetail.data) 
-  ? resSongDetail.data.slice(0, 3) 
-  : resSongDetail.data;
+      const contentType = resSongDetail.data.contentType;
+   const songs = Array.isArray(resSongDetail.data.songs)
+      ? resSongDetail.data.songs
+      : resSongDetail.data.songs || [];
 
-      return songsDetail
+    // Pagination logic
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedSongs = songs.slice(startIndex, endIndex);
+    
+      return {
+        contentType,
+        page,
+      limit,
+      total: songs.length,
+      totalPages: Math.ceil(songs.length / limit),
+      data: paginatedSongs,
+      
+      }
     }catch(err){
       console.error(err)
 

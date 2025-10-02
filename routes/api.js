@@ -95,25 +95,53 @@ res.json(music)
 
 })
 
-router.get('/api/spotify/v3/download',async(req,res)=>{
-const spotiyUrl= req.query.url
-const spotimp3 = new Spotimp3()
-const music = await spotimp3.download(spotiyUrl)
-return res.json(music)
-  
-}
-)
+router.get('/api/spotify/v3/download', async (req, res) => {
+  try {
+    const spotifyUrl = req.query.url;
+    if (!spotifyUrl) {
+      return res.status(400).json({ error: "Missing url parameter" });
+    }
 
-router.get('/api/spotify/v1/detail',async(req,res)=>{
-    const songs = req.query.q
-    const spotimp3 = new Spotimp3()
-    const songsResult = await spotimp3.getDetail(songs)
-    return songsResult
+    const spotimp3 = new Spotimp3();
+    const music = await spotimp3.download(spotifyUrl);
 
+    if (!music) {
+      return res.status(500).json({ error: "Failed to download track" });
+    }
 
-    
-}
-)
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Content-Disposition", "attachment; filename=track.mp3");
+    return res.send(Buffer.from(music));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/api/spotify/v1/detail', async (req, res) => {
+   try {
+    const q = req.query.q;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    if (!q) {
+      return res.status(400).json({ error: "Missing q parameter" });
+    }
+
+    const spotimp3 = new Spotimp3();
+    const songsResult = await spotimp3.getDetail(q, page, limit);
+
+    if (!songsResult) {
+      return res.status(500).json({ error: "Failed to get song detail" });
+    }
+
+    return res.json(songsResult);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 // tiktok downloader 1
 router.get('/api/tik-down/v1',async(req,res)=>{
     const url = req.query.url
