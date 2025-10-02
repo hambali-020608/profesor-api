@@ -54,14 +54,14 @@ const resDownload = await axios.post(
       "https://spotmp3.app/api/download",
       { url }, // body (JSON)
       {
-        responseType: "arraybuffer",
+        responseType: "stream",
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36",
           Referer: "https://spotmp3.app/",
           "Content-Type": "application/json",
         },
-        timeout: 20000,
+        timeout: 50000,
       }
     );
 
