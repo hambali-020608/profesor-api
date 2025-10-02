@@ -5,7 +5,7 @@ const yts = require( 'yt-search' );
 // const {layarDrama} = require('../function/layardrama')
 const {justtalk} = require('../function/justtalk')
 
-const { spotidown, SpotifyDown } = require('../function/spotify');
+const { SpotifyDown } = require('../function/spotify');
 const { ytdl } = require('../function/youtube');
 const { ddownr } = require('../function/ddownr');
 const { downloadSpotify,spotiDown } = require('../function/spotiLink')
@@ -97,13 +97,23 @@ res.json(music)
 
 router.get('/api/spotify/v3/download',async(req,res)=>{
 const spotiyUrl= req.query.url
-const music = await Spotimp3(spotiyUrl)
-res.json(music)
+const spotimp3 = new Spotimp3()
+const music = await spotimp3.download(spotiyUrl)
+return res.json(music)
   
 }
 )
 
+router.get('/api/spotify/v1/detail',async(req,res)=>{
+    const songs = req.query.q
+    const spotimp3 = new Spotimp3()
+    const songsResult = await spotimp3.getDetail(songs)
+    return songsResult
 
+
+    
+}
+)
 // tiktok downloader 1
 router.get('/api/tik-down/v1',async(req,res)=>{
     const url = req.query.url
