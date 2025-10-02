@@ -104,13 +104,13 @@ router.get('/api/spotify/v3/download', async (req, res) => {
 
     const spotimp3 = new Spotimp3();
     const music = await spotimp3.download(spotifyUrl);
-
+    const musicDetail = await spotimp3.getDetail(spotifyUrl);
     if (!music) {
       return res.status(500).json({ error: "Failed to download track" });
     }
 
     res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader("Content-Disposition", "attachment; filename=track.mp3");
+    res.setHeader("Content-Disposition", `attachment; filename=${musicDetail.data.title}.mp3`);
     return res.send(Buffer.from(music));
   } catch (err) {
     console.error(err);
