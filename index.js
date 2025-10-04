@@ -12,7 +12,7 @@ app.use(cors({origin:'*'}))
 app.use(express.json());
 
 // Import API routes
-const apiRoutes = require("./routes/api");
+const apiRoutes = require("./src/routes");
 app.use("/", apiRoutes);
 
 // Tambahkan Swagger UI di `/docs`
