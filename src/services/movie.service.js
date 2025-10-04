@@ -1,155 +1,194 @@
+// import * as cheerio from 'cheerio';
 const cheerio = require('cheerio')
-const api = "https://www.mikelevylaw.com"
-
-const justtalk= {
-    Movies:async(page)=>{
-        let movies = []
-        const response = await fetch(`${api}/page/${page}`)
-        const data = await response.text()
-    const $ = cheerio.load(data)
-    
-    $('.gmr-item-modulepost').each((i, el) => {
-      const moviesTitle = $(el).find('h2.entry-title a').text().trim();
-      const posterUrls = $(el).find('img.wp-post-image').attr('src');
-
-      if (moviesTitle && posterUrls) {
-        movies.push({ moviesTitle, posterUrls });
-      }
-    });
-
-    // console.log(result);
-    return movies
-    },
-
-    latestMovies:async(page=1)=>{
-        let movies = []
-        const response = await fetch(`${api}/page/${page}`)
-        const data = await response.text()
-    const $ = cheerio.load(data)
-       const articles = $('#gmr-main-load article');
-
-    articles.each((i, article) => {
-      const titleTag = $(article).find('h2.entry-title a');
-      const imgTag = $(article).find('img.wp-post-image');
-
-      const title = titleTag.text().trim() || 'N/A';
-      const poster = imgTag.attr('src') || 'N/A';
-      movies.push({
-        moviesTitle:title,
-        posterUrls:poster
-      })
 
 
+// const response = await fetch('https://tv2.lk21official.cc')
+// const html = await response.text()
+// const $ = cheerio.load(html)
+// const newest_title = $('#newest').find('h3.caption').text()
 
-    //   console.log(`Title: ${title}`);
-    //   console.log(`Poster: ${poster}`);
-    //   console.log('---');
-    });
 
-        return movies
-    },
-    search:async(query)=>{
-        const response = await fetch(`${api}/?s=${query}&post_type%5B%5D=post&post_type%5B%5D=tv`)
-        const data = await response.text()
-  const $ = cheerio.load(data)
-  const movies = [];
+// // newest_title.map((t)=>{
+// //     console.log(t)
+// // })
+
+
+const filmApik = {
+
+
+  BoxOfficeApik: async (page) => {
+    const data = [];
+    const response = await fetch(`https://filmapik.now/category/box-office/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
   
-  $('#gmr-main-load article').each((i, el) => {
-            const title = $(el).find('.entry-title a').text().trim();
-            const link = $(el).find('.entry-title a').attr('href');
-            const image = $(el).find('.content-thumbnail a img').attr('src');
-            const rating = $(el).find('.gmr-rating-item').text().trim();
-            const duration = $(el).find('.gmr-duration-item').text().trim();
-            const quality = $(el).find('.gmr-quality-item a').text().trim();
-            const genres = [];
-            console.log(title)
-            $(el).find('.gmr-movie-on a[rel="category tag"]').each((i, g) => {
-                genres.push($(g).text().trim());
-            });
-            const country = $(el).find('.gmr-movie-on span[itemprop="contentLocation"] a').text().trim();
-    
-            movies.push({
-                title,
-                // link,
-                image,
-                rating,
-                duration,
-                quality,
-                genres,
-                source:'justtalk',
-                country
-            });
-        });
-        return movies
-    
-        // console.log(movies)
+    $('article.item.movies').each((i, el) => {
+      const poster = $(el).find('img').attr('src');
+      const rating = $(el).find('div.rating').text();
+      const title = $(el).find('h3 a').text();
       
-        // console.log(data)
-    }   ,
-    streaming:async(slug,player=1)=>{
-        const cleanedSlug = slug.toLowerCase()
-  .replace(/\s*\((\d{4})\)/, '')    // ganti (2023) jadi -2023
-  .replace(/\s+/g, '-')                // ganti spasi dengan tanda -
-  .replace(/[^a-z0-9\-]/g, '');        // hilangkan semua kecuali huruf, angka, dan tanda minus// hilangkan karakter selain huruf, angka, dan -
-        const response = await fetch(`${api}/${cleanedSlug}/?player=${player}`)
-        const data = await response.text()
-        const $ = cheerio.load(data)
-        const streamUrl = $('.gmr-embed-responsive iframe').attr('src');
-        
-// Ambil data
-const title = $('.gmr-movie-data-top .entry-title').text().trim();
-const ratingValue = $('[itemprop="ratingValue"]').text().trim();
-const ratingCount = $('[itemprop="ratingCount"]').text().trim();
-const description = $('.entry-content.entry-content-single p').first().text().trim();
-const author = $('.entry-author [itemprop="name"]').text().trim();
-const postDate = $('.entry-date.published').text().trim();
-
-const genre = [];
-$('.gmr-moviedata strong:contains("Genre:")').nextAll('a').each((i, el) => {
-    genre.push($(el).text().trim());
-});
-
-const year = $('.gmr-moviedata strong:contains("Year:")').next('a').text().trim();
-const duration = $('.gmr-moviedata strong:contains("Duration:")').next().text().trim();
-const country = $('.gmr-moviedata strong:contains("Country:")').next().text().trim();
-const release = $('.gmr-moviedata strong:contains("Release:")').next().text().trim();
-const language = $('.gmr-moviedata strong:contains("Language:")').next().text().trim();
-const director = $('.gmr-moviedata strong:contains("Director:")').next().text().trim();
-
-const cast = [];
-$('.gmr-moviedata strong:contains("Cast:")').nextAll('[itemprop="name"]').each((i, el) => {
-    cast.push($(el).text().trim());
-});
-
-// Gabung semua data ke dalam objek
-const movieData = {
-    title,
-    rating: {
-        value: ratingValue,
-        votes: ratingCount
-    },
-    description,
-    author,
-    postDate,
-    genre,
-    year,
-    duration,
-    country,
-    release,
-    language,
-    director,
-    cast,
-    streamUrl,
+      data.push({
+        posterUrls: poster,
+        moviesTitle: title,
+        moviesRating: rating
+      });
+    });
+  
+    return { data };
+  },
+  TrendingApik: async (page) => {
+    let data = [];
+    const response = await fetch(`https://filmapik.now/trending-2/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
     
-};
+    $('article.item.movies').each((i, el) => {
+      const poster = $(el).find('img').attr('src');
+      const rating = $(el).find('div.rating').text();
+      const title = $(el).find('h3 a').text();
+      
+      data.push({
+        posterUrls: poster,
+        moviesTitle: title,
+        moviesRating: rating
+      });
+    });
+  
+    return { data };
+  },
+  LatestApik: async (page) => {
+    let data = [];
+    const response = await fetch(`https://filmapik.now/latest/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    $('article.item.movies').each((i, el) => {
+      const poster = $(el).find('img').attr('src');
+      const rating = $(el).find('div.rating').text();
+      const title = $(el).find('h3 a').text();
+      
+      data.push({
+        posterUrls: poster,
+        moviesTitle: title,
+        moviesRating: rating
+      });
+    });
+  
+    return { data };
+  },
 
-console.log(movieData);
-return movieData
-// console.log('Stream URL:', streamUrl);
+DownloadApik: async(slug)=>{
+  // const cleanedSlug = slugify(slug)        // hilangkan semua kecuali huruf, angka, dan tanda minus
+  const response = await fetch(`https://filmapik.now/nonton-film-${slug}-subtitle-indonesia/play`)
+  const data = await response.text()
+  const $ = cheerio.load(data)
+  const links = [];
+  
+  
+  // Karena semua <ul> punya class yang sama dan ID yang sama (tidak valid HTML),
+  // kita bisa loop berdasarkan struktur DOM-nya
+  $('#playeroptions > ul').each((i, el) => {
+      const server = $(el).find('.server_title').text().trim();
+      const li = $(el).find('li.dooplay_player_option');
+      const url = li.attr('data-url');
+      const quality = li.find('.title').text().trim();
+      
+
+      links.push({
+          server,
+          quality,
+          url
+      });
+  });
+  let title = $('h1[itemprop="name"]').text().trim();
+ title = title.replace('Nonton Film',"")
+  title = title.replace('Filmapik','')
+
+  const genres = [];
+  $('.sgeneros a').each((i, el) => {
+    genres.push($(el).text().trim());
+  });
+
+  let director = $('span.tagline:contains("Director") a').first().text().trim();
+  
+  const actors = [];
+  $('span[itemprop="actor"] a').each((i, el) => {
+    actors.push($(el).text().trim());
+  });
+
+  const country = $('span.country:contains("Country") a').text().trim();
+
+  let duration = $('span.runtime').text().replace('Duration', '').trim();
+   duration = duration.replace(':', '').trim();
+
+  const quality = $('span.country:contains("Quality") a').text().trim();
+
+  const releaseYear = $('span.country:contains("Release") a').text().trim();
+
+  const imdb = $('#repimdb strong').text().trim();
+
+  const resolution = $('span.country:contains("Resolusi") a').text().trim();
+
+  const synopsis = $('.sbox h2:contains("Synopsis")')
+    .next('.wp-content')
+    .text()
+    .trim();
+
+  return {
+    title,
+    genres,
+    director,
+    actors,
+    source:'filmapik',
+    country,
+    duration,
+    quality,
+    slug,
+    releaseYear,
+    imdb,
+    resolution,
+    synopsis,
+    links
+  };
 
 
-        
+  // return links
 
-    }
+
+},
+
+SearchApik: async(search)=>{
+  const response = await fetch(`https://filmapik.now/?s=${search}`);
+  const html = await response.text();
+  const $ = cheerio.load(html);
+  const data = [];
+
+  $('.result-item').each((i, el) => {
+    let title = $(el).find('.title a').text().trim();
+    let detailUrl = title.replace('Nonton Film',"")
+    detailUrl = detailUrl.replace('Subtitle Indonesia',"")
+    const poster = $(el).find('img').attr('src');
+    const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
+    let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
+    synopsis = synopsis.replace('–','')
+    synopsis= synopsis.replace('ULASAN :','')
+    data.push({
+      title,
+      detailUrl,
+      poster,
+      rating,
+      source:'filmapik',
+      synopsis,
+    });
+  });
+
+  return data;
+
+
 }
-module.exports = {justtalk}
+
+}
+
+
+
+ module.exports = {filmApik}

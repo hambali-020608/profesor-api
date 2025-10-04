@@ -1,54 +1,36 @@
-const { justtalk } = require("../services/movie.service");
+const { filmApik } = require("../services/movie.service");
 
-exports.justtalkLatest = async (req, res) => {
-  try {
-    const page = req.query.page || 1;
-    const data = await justtalk.latestMovies(page);
-    return res.json({ success: true, data });
-  } catch (error) {
-    console.error("Error fetching latest movies:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+exports.filmApikBox = async (req, res) => {
+   const page = req.query.page
+    const data = await filmApik.BoxOfficeApik(page)
+    res.json(data)
+
 };
 
-exports.justtalkMovies = async (req, res) => {
-  try {
-    const page = req.query.page || 1;
-    const data = await justtalk.Movies(page);
-    return res.json({ success: true, data });
-  } catch (error) {
-    console.error("Error fetching movies:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+exports.filmApikTrending = async (req, res) => {
+const page = req.query.page
+    const data = await filmApik.TrendingApik(page)
+    res.json(data)
+
 };
 
-exports.justtalkStreaming = async (req, res) => {
-  try {
-    const slug = req.query.slug;
-    if (!slug) {
-      return res.status(400).json({ success: false, message: "Slug is required" });
-    }
+exports.filmApikLatest = async (req, res) => {
+const page = req.query.page
+    const data = await filmApik.LatestApik(page)
+    res.json(data)
 
-    console.log("Streaming slug:", slug);
-    const data = await justtalk.streaming(slug);
-    return res.json({ success: true, data });
-  } catch (error) {
-    console.error("Error fetching streaming data:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
 };
 
-exports.justtalkSearch = async (req, res) => {
-  try {
-    const query = req.query.q;
-    if (!query) {
-      return res.status(400).json({ success: false, message: "Search query is required" });
-    }
+exports.filmApikDownload = async (req, res) => {
+   const slug = req.query.slug
+    const data = await filmApik.DownloadApik(slug)
+    res.json(data)
+   
+};
 
-    const data = await justtalk.search(query);
-    return res.json({ success: true, data });
-  } catch (error) {
-    console.error("Error searching movies:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+exports.filmApikSearch = async (req, res) => {
+   const query = req.query.q
+    const data = await filmApik.SearchApik(query)
+    res.json(data)
+   
 };

@@ -3,10 +3,11 @@ const router = express.Router();
 const movieController = require("../controllers/movie.controller");
 
 
-router.get('/v2/latest',movieController.justtalkLatest)
-router.get('/v2/movies',movieController.justtalkMovies)
-router.get('/v2/streaming',movieController.justtalkStreaming)
-router.get('/v2/search',movieController.justtalkSearch)
+router.get('/v1/box-office',movieController.filmApikBox)
+router.get('/v1/trending',movieController.filmApikTrending)
+router.get('/v1/latest',movieController.filmApikLatest)
+router.get('/v1/download',movieController.filmApikDownload)
+router.get('/v1/search',movieController.filmApikSearch)
 
 
 module.exports = router;
