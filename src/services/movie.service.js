@@ -77,9 +77,10 @@ const filmApik = {
     return { data };
   },
 
-DownloadApik: async(slug)=>{
-  // const cleanedSlug = slugify(slug)        // hilangkan semua kecuali huruf, angka, dan tanda minus
-  const response = await fetch(`https://filmapik.now/nonton-film-${slug}-subtitle-indonesia/play`)
+DownloadApik: async(slug,type="Movies")=>{
+
+  if(type ==="Movies"){
+const response = await fetch(`https://filmapik.channel/nonton-film-${slug}-subtitle-indonesia/play`)
   const data = await response.text()
   const $ = cheerio.load(data)
   const links = [];
@@ -133,8 +134,8 @@ DownloadApik: async(slug)=>{
     .next('.wp-content')
     .text()
     .trim();
-
-  return {
+    
+    return {
     title,
     genres,
     director,
@@ -150,13 +151,200 @@ DownloadApik: async(slug)=>{
     synopsis,
     links
   };
+  
+  
+}
+  if(type ==="TV-Shows"){
+    function extractUrlFromStyle(style) {
+  if (!style) return null;
+  const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+  return m ? m[2] : null;
+}
 
+/**
+ * Normalisasi href relatif menjadi absolute menggunakan baseUrl jika perlu
+ */
+function normalizeUrl(href, baseUrl) {
+  if (!href) return null;
+  try {
+    return new URL(href, baseUrl).href;
+  } catch (e) {
+    return href;
+  }
+}
 
+const baseUrl = 'https://filmapik.channel';
+    
+const response = await fetch(`https://filmapik.channel/tvshows/nonton-${slug}-sub-indo/`)
+
+const data = await response.text()
+const $ = cheerio.load(data)
+    // Breadcrumbs
+ 
+  // Judul utama
+  const title = $('h1').first().text().trim();
+
+  // Poster image
+  const poster = $('.poster img').attr('src') || $('.poster img').attr('data-src');
+
+  // Backdrop dari style
+  const backdropStyle = $('.tvshow_backdrop').attr('style') || '';
+  const backdrop = extractUrlFromStyle(backdropStyle);
+
+  // Genres (di dalam .sgeneros a)
+  const genres = $('.sgeneros a').map((i, el) => $(el).text().trim()).get();
+
+  // Director, Stars, Networks — cari span.tagline yang mengandung kata kunci
+  function findLinksFromTagline(keyword) {
+    const el = $('span.tagline').filter((i, s) => $(s).text().includes(keyword)).first();
+    if (!el || el.length === 0) return [];
+    return el.find('a').map((i, a) => ({
+      name: $(a).text().trim(),
+      href: normalizeUrl($(a).attr('href'), baseUrl)
+    })).get();
+  }
+  const directors = findLinksFromTagline('Director');
+  const stars = findLinksFromTagline('Stars');
+  
+  // Series status & duration
+  // Status mis. di: <div class="info-more"><span>Series Status : Ended</span>...
+  const infoSpans = $('.info-more span').map((i, el) => $(el).text().trim()).get();
+  // coba cari yang memuat "Series Status" dan "Duration"
+  const seriesStatus = infoSpans.find(s => /Series Status/i.test(s))?.split(':').pop().trim() || null;
+  // itemprop duration jika ada
+  const duration = $('[itemprop="duration"].runtime').text().trim() || (infoSpans.find(s => /Duration/i.test(s))?.split(':').pop().trim() || null);
+
+  // Seasons & episodes
+  const seasons = [];
+  $('#seasons .se-c').each((i, se) => {
+    const $se = $(se);
+    // season number bisa di .se-t atau di judul .title
+    const seasonNumberText = $se.find('.se-t').first().text().trim() || $se.find('.title').first().text().trim();
+    // Normalisasi angka
+    const seasonNumber = (seasonNumberText.match(/\d+/) || [null])[0];
+
+    const seasonTitle = $se.find('.title').first().text().trim() || `Season ${seasonNumber || i+1}`;
+
+    const episodes = [];
+    $se.find('ul.episodios li').each((j, li) => {
+      const a = $(li).find('a').first();
+      const epText = a.text().trim() || $(li).text().trim();
+      const epHref = normalizeUrl(a.attr('href'));
+      // optional: parse episode index dari class seperti mark-1-3 -> season-episode
+      const cls = $(li).attr('class') || '';
+      let epIndex = null;
+      const cm = cls.match(/mark-(\d+)-(\d+)/);
+      if (cm) {
+        epIndex = { season: parseInt(cm[1], 10), episode: parseInt(cm[2], 10) };
+      }
+      episodes.push({
+        text: epText,
+        href: epHref,
+        index: epIndex
+      });
+    });
+
+    seasons.push({
+      season: seasonNumber ? parseInt(seasonNumber, 10) : (i + 1),
+      title: seasonTitle,
+      episodes
+    });
+  });
+
+  // Cast names (jika mau nama saja)
+  const castNames = stars.map(s => s.name);
+
+  // Kembalikan objek ringkas
+  return {
+    title,
+    poster: normalizeUrl(poster, baseUrl),
+    backdrop: normalizeUrl(backdrop, baseUrl),
+    genres,
+    directors,
+    stars,
+    castNames,
+
+    seriesStatus,
+    duration,
+    seasons
+  };
+}
+  
+  
+  // const cleanedSlug = slugify(slug)        // hilangkan semua kecuali huruf, angka, dan tanda minus
+  
   // return links
 
 
 },
 
+StreamingDrama:async(slug)=>{
+  const response = await fetch(`https://filmapik.channel${slug}`)
+  const data = await response.text()
+  const $ = cheerio.load(data)
+  // --- ambil data penting ---
+const title = $("h1").text().trim();
+const poster = $(".sheader .poster img").attr("src");
+const imdb = $("#repimdb strong").text().trim();
+const duration = $(".runtime").text().replace("Duration : ", "").trim();
+const release = $(".country a").text().trim();
+const genres = $(".sgeneros a").map((i, el) => $(el).text()).get();
+const director = $("span.tagline:contains('Director') a").text();
+const networks = $("span.tagline:contains('Networks') a").text();
+
+// semua link episode
+
+const servers = [];
+
+$('#playeroptions ul').each((i, el) => {
+  const serverTitle = $(el).find('.server_title').text().trim();
+
+  $(el).find('li.dooplay_player_option').each((j, li) => {
+    servers.push({
+      server: serverTitle.replace(/\s+/g, ' ').trim(),
+      name: $(li).find('.title').text().trim(),
+      url: $(li).attr('data-url'),
+      type: $(li).attr('data-type'),
+      postId: $(li).attr('data-post'),
+      num: $(li).attr('data-nume'),
+    });
+  });
+});
+const episodes = [];
+$(".episodios li a").each((i, el) => {
+  episodes.push({
+    title: $(el).text(),
+    url: $(el).attr("href"),
+  });
+});
+
+// link download
+const downloadLinks = [];
+$("#download a").each((i, el) => {
+  downloadLinks.push({
+    text: $(el).text().trim(),
+    url: $(el).attr("href"),
+  });
+});
+
+// kumpulkan semua data
+const result = {
+  title,
+  poster,
+  imdb,
+  duration,
+  release,
+  genres,
+  director,
+  networks,
+  episodes,
+  downloadLinks,
+  servers
+};
+
+return result;
+
+},
 SearchApik: async(search)=>{
   const response = await axios.get(`https://filmapik.channel/?s=${search}`,{
     timeout: 10000,

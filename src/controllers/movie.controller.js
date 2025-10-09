@@ -23,7 +23,8 @@ const page = req.query.page
 
 exports.filmApikDownload = async (req, res) => {
    const slug = req.query.slug
-    const data = await filmApik.DownloadApik(slug)
+   const type = req.query.type
+    const data = await filmApik.DownloadApik(slug,type)
     res.json(data)
    
 };
@@ -31,6 +32,12 @@ exports.filmApikDownload = async (req, res) => {
 exports.filmApikSearch = async (req, res) => {
    const query = req.query.q
     const data = await filmApik.SearchApik(query)
+    res.json(data)
+   
+};
+exports.filmApikDramaStream = async (req, res) => {
+   const slug = req.query.slug
+    const data = await filmApik.StreamingDrama(slug)
     res.json(data)
    
 };

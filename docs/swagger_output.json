@@ -194,6 +194,11 @@
             "name": "slug",
             "in": "query",
             "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -209,6 +214,23 @@
         "parameters": [
           {
             "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/movies/v1/streaming-drama": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "slug",
             "in": "query",
             "type": "string"
           }
@@ -274,6 +296,11 @@
         "parameters": [
           {
             "name": "slug",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "type",
             "in": "query",
             "type": "string"
           }
@@ -348,6 +375,23 @@
         "parameters": [
           {
             "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/streaming-drama": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "slug",
             "in": "query",
             "type": "string"
           }
