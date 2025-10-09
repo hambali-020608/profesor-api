@@ -18,9 +18,12 @@ const apiRoutes = require("./src/routes");
 // Tambahkan Swagger UI di `/docs`
 // app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/", apiRoutes);
-app.get('/docs',(req,res)=>{
+app.get('/docs-json',(req,res)=>{
       res.json(swaggerDocument);
 })
+app.get("/docs", (req, res) => {
+  res.sendFile(path.join(__dirname, "docs.html"));
+});
 
 
 const PORT = 3000;
