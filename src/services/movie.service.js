@@ -1,7 +1,7 @@
 // import * as cheerio from 'cheerio';
 const cheerio = require('cheerio')
 
-
+const axios = require('axios');
 // const response = await fetch('https://tv2.lk21official.cc')
 // const html = await response.text()
 // const $ = cheerio.load(html)
@@ -158,34 +158,61 @@ DownloadApik: async(slug)=>{
 },
 
 SearchApik: async(search)=>{
-  const response = await fetch(`https://filmapik.now/?s=${search}`);
-  const html = await response.text();
+  const response = await axios.get(`https://filmapik.channel/?s=${search}`,{
+    timeout: 10000,
+  });
+  
+  const html = await response.data
   const $ = cheerio.load(html);
   const data = [];
 
-  $('.result-item').each((i, el) => {
-    let title = $(el).find('.title a').text().trim();
-    let detailUrl = title.replace('Nonton Film',"")
-    detailUrl = detailUrl.replace('Subtitle Indonesia',"")
-    const poster = $(el).find('img').attr('src');
-    const rating = $(el).find('.rating').text().replace('IMDb', '').trim();
-    let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
-    synopsis = synopsis.replace('–','')
-    synopsis= synopsis.replace('ULASAN :','')
-    data.push({
-      title,
-      detailUrl,
-      poster,
-      rating,
-      source:'filmapik',
-      synopsis,
-    });
+ $('.result-item').each((i, el) => {
+  let title = $(el).find('.title a').text().trim();
+  let detailUrl = title.replace('Nonton Film', '').replace('Subtitle Indonesia', '');
+  const poster = $(el).find('img').attr('src');
+
+  // Ambil isi <span> seperti "MoviesIMDb 5.5" atau "TV-ShowsTMDb 8END"
+  const spanText = $(el).find('span').text().trim();
+
+  let type = '';
+  let rating = '';
+  let status = '';
+
+  if (spanText.includes('IMDb')) {
+    // Format: MoviesIMDb 5.5
+    type = spanText.split('IMDb')[0].trim(); // "Movies"
+    rating = spanText.replace(/.*IMDb\s*/i, '').trim(); // "5.5"
+  } else if (spanText.includes('TMDb')) {
+    // Format: TV-ShowsTMDb 8END
+    type = spanText.split('TMDb')[0].trim(); // "TV-Shows"
+    const match = spanText.match(/TMDb\s*([\d.]+)([A-Za-z]*)/);
+    if (match) {
+      rating = match[1]; // "8"
+      status = match[2]; // "END"
+    }
+  }
+
+  let synopsis = $(el).find('.contenido p').text().replace('ALUR CERITA :', '').trim();
+  synopsis = synopsis.replace('–', '').replace('ULASAN :', '');
+
+  data.push({
+    title,
+    detailUrl,
+    poster,
+    type,
+    rating,
+    status,
+    source: 'filmapik',
+    synopsis,
   });
+});
 
   return data;
 
 
 }
+
+
 
 }
 

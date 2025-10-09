@@ -5,5 +5,6 @@ router.use("/api/spotify", require("./spotify.routes"));
 router.use("/api/tiktok", require("./tiktok.routes"));
 router.use("/api/youtube", require("./youtube.routes"));
 router.use("/api/movies", require("./movies.routes"));
+router.use("/api/rm-bg", require("./rmbg"));
 
 module.exports = router;

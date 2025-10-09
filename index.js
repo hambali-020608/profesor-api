@@ -3,13 +3,15 @@ const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const cors = require("cors");
 const path = require("path");
-
+const compression = require("compression");
 // Load file dokumentasi Swagger
 const swaggerDocument = YAML.load(path.join(__dirname, "docs", "api-docs.yaml"));
 
 const app = express();
 app.use(cors({origin:'*'}))
 app.use(express.json());
+app.use(compression());
+
 
 // Import API routes
 const apiRoutes = require("./src/routes");
