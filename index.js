@@ -21,7 +21,7 @@ app.use("/", apiRoutes);
 app.get('/docs-json',(req,res)=>{
       res.json(swaggerDocument);
 })
-app.get("/docs", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "docs.html"));
 });
 
