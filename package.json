@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "swagger:gen":"node swagger.generate.js",
     "test": "node index.js"
   },
   "author": "hambali",
@@ -21,5 +22,8 @@
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0",
     "yt-search": "^2.12.1"
+  },
+  "devDependencies": {
+    "swagger-autogen": "^2.23.7"
   }
 }
