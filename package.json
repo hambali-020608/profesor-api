@@ -17,6 +17,7 @@
     "express": "^4.21.2",
     "form-data": "^4.0.2",
     "node-fetch": "^3.3.2",
+    "swagger-ui": "^5.29.3",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0",
     "yt-search": "^2.12.1"

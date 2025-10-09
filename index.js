@@ -11,14 +11,17 @@ const app = express();
 app.use(cors({origin:'*'}))
 app.use(express.json());
 app.use(compression());
-
+app.use
 
 // Import API routes
 const apiRoutes = require("./src/routes");
-app.use("/", apiRoutes);
-
 // Tambahkan Swagger UI di `/docs`
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/", apiRoutes);
+app.get('/docs',(req,res)=>{
+      res.json(swaggerDocument);
+})
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
