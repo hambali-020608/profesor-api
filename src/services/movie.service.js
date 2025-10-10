@@ -30,6 +30,7 @@ const filmApik = {
       data.push({
         posterUrls: poster,
         moviesTitle: title,
+        Type:"Movies",
         moviesRating: rating
       });
     });
@@ -49,6 +50,7 @@ const filmApik = {
       
       data.push({
         posterUrls: poster,
+        Type:"Movies",
         moviesTitle: title,
         moviesRating: rating
       });
@@ -58,7 +60,8 @@ const filmApik = {
   },
   LatestApik: async (page) => {
     let data = [];
-    const response = await fetch(`https://filmapik.now/latest/page/${page}`);
+  const baseurl = "https://filmapik.channel"
+    const response = await fetch(`https://filmapik.channel/latest/page/${page}`);
     const html = await response.text();
     const $ = cheerio.load(html);
     
@@ -66,10 +69,13 @@ const filmApik = {
       const poster = $(el).find('img').attr('src');
       const rating = $(el).find('div.rating').text();
       const title = $(el).find('h3 a').text();
+    const slug = $(el).find('a').attr('href').replace(baseurl,'').replace('/','');
       
       data.push({
         posterUrls: poster,
+        slug,
         moviesTitle: title,
+        Type:"Movies",
         moviesRating: rating
       });
     });

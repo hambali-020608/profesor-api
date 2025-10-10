@@ -9,6 +9,7 @@ router.get('/v1/latest',movieController.filmApikLatest)
 router.get('/v1/download',movieController.filmApikDownload)
 router.get('/v1/search',movieController.filmApikSearch)
 router.get('/v1/streaming-drama',movieController.filmApikDramaStream)
+router.get('/v1/stream',movieController.filmApikStream)
 
 
 module.exports = router;
