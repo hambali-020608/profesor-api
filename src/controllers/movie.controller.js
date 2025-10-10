@@ -39,19 +39,10 @@ exports.filmApikStream = async (req, res) => {
 
 
   try {
-    const response = await request(url);
-
-    if (!response.ok) {
-      return res.status(response.status).send('Failed to fetch video');
-    }
-
-    // Set content-type sama seperti server asal
-    res.setHeader('Content-Type', response.headers.get('content-type') || 'video/mp4');
-
-    // Stream langsung ke client
-    response.body.pipe(res);
-  } catch (err) {
-    console.error(err);
+     const { body, headers } = await request(url);
+    res.setHeader('Content-Type', headers['content-type' ] || 'video/mp4');
+    body.pipe(res);
+  } catch(err) {
     res.status(500).send(err.message);
   }
 }
