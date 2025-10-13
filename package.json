@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "swagger:gen":"node swagger.generate.js",
+    "swagger:gen": "node swagger.generate.js",
     "test": "node index.js"
   },
   "author": "hambali",
@@ -20,6 +20,7 @@
     "node-fetch": "^3.3.2",
     "swagger-ui": "^5.29.3",
     "swagger-ui-express": "^5.0.1",
+    "video-to-audio": "^1.0.1",
     "yamljs": "^0.3.0",
     "yt-search": "^2.12.1"
   },
