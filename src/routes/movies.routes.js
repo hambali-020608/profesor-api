@@ -10,6 +10,6 @@ router.get('/v1/download',movieController.filmApikDownload)
 router.get('/v1/search',movieController.filmApikSearch)
 router.get('/v1/streaming-drama',movieController.filmApikDramaStream)
 router.get('/v1/stream',movieController.filmApikStream)
-
+router.get('/v2/indo-movie',movieController.hostingHolaIndo)
 
 module.exports = router;

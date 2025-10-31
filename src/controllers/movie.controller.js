@@ -1,4 +1,4 @@
-const { filmApik } = require("../services/movie.service");
+const { filmApik,hostingHola } = require("../services/movie.service");
 // import {request} from 'undici'
 const {request} = require('undici');
 exports.filmApikBox = async (req, res) => {
@@ -60,3 +60,9 @@ exports.filmApikDramaStream = async (req, res) => {
     res.json(data)
    
 };
+
+exports.hostingHolaIndo=async(req,res)=>{
+  const hostinghola=new hostingHola()
+  const data = await hostinghola.getIndoMovies()
+  res.json(data)
+}

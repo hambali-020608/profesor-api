@@ -410,6 +410,29 @@ SearchApik: async(search)=>{
 
 }
 
+class hostingHola{
+  constructor(){
+    this.baseUrl="https://hostingaloha.com/"
+  }
+  
+  async getIndoMovies(){
+    let data = []
+    const response = await fetch(this.baseUrl + 'country/indonesia/')
+    const html = await response.text()
+    const $ = cheerio.load(html)
+    $('article.item').each((i,el)=>{
+      const title = $(el).find('h2.entry-title').text().replace('\n','');
+      
+      data.push({title})
+    })
+
+    return data
+   
+  }
+}
+
+// const filmHosting = new hostingHola()
+// filmHosting.getIndoMovies()
 
 
- module.exports = {filmApik}
+ module.exports = {filmApik,hostingHola}
