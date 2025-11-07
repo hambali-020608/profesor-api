@@ -62,7 +62,18 @@ exports.filmApikDramaStream = async (req, res) => {
 };
 
 exports.hostingHolaIndo=async(req,res)=>{
+  const page = req.query.page
   const hostinghola=new hostingHola()
-  const data = await hostinghola.getIndoMovies()
+  const data = await hostinghola.getIndoMovies(page)
   res.json(data)
 }
+exports.hostingHolaStreamMovies=async(req,res)=>{
+  const url = req.query.url
+  const slug = req.query.slug
+  const type = req.query.type
+  
+  const hostinghola=new hostingHola()
+  const data = await hostinghola.getStreaming(slug,url,type)
+  res.json(data)
+}
+

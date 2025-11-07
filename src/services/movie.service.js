@@ -2,6 +2,7 @@
 const cheerio = require('cheerio')
 
 const axios = require('axios');
+const {getStream} = require('../functions/filmHosting.js')
 // const response = await fetch('https://tv2.lk21official.cc')
 // const html = await response.text()
 // const $ = cheerio.load(html)
@@ -414,25 +415,114 @@ class hostingHola{
   constructor(){
     this.baseUrl="https://hostingaloha.com/"
   }
-  
-  async getIndoMovies(){
-    let data = []
-    const response = await fetch(this.baseUrl + 'country/indonesia/')
-    const html = await response.text()
-    const $ = cheerio.load(html)
-    $('article.item').each((i,el)=>{
-      const title = $(el).find('h2.entry-title').text().replace('\n','');
-      
-      data.push({title})
-    })
 
-    return data
-   
+    async init() {
+    try {
+      const res = await fetch(this.baseUrl, { redirect: "follow" }); // auto follow redirect
+      if (res.ok) {
+        // kalau domain berubah, ambil domain final dari res.url
+        const finalUrl = new URL(res.url);
+        const base = `${finalUrl.origin}/`;
+
+        if (base !== this.baseUrl) {
+          console.log(`🌐 Redirect terdeteksi: ${this.baseUrl} → ${base}`);
+          this.baseUrl = base;
+        } else {
+          console.log(`✅ Domain aktif: ${this.baseUrl}`);
+        }
+      } else {
+        throw new Error("Gagal mengakses domain awal");
+      }
+    } catch (err) {
+      console.error("❌ Gagal mendeteksi domain aktif:", err.message);
+    }
   }
+  
+  async getIndoMovies(page) {
+    if (!this.baseUrl) await this.init();
+    await this.init(); // pastikan baseUrl terbaru setiap kali dipanggil
+
+    const data = [];
+    const response = await fetch(`${this.baseUrl}country/indonesia/page/${page}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    $("article.item").each((i, el) => {
+      const title = $(el).find("h2.entry-title").text().trim();
+      const linkStream = $(el).find("a").attr("href");
+      let encodeurl = Buffer.from(linkStream).toString('base64');
+      // const decoded = Buffer.from(encodeurl, "base64").toString("utf8");
+
+      const poster = $(el).find("img").attr("src");
+      const rating = $(el).find("div.gmr-rating-item").text().trim();
+      const duration = $(el).find("div.gmr-duration-item").text().trim();
+      let slug = linkStream.replace(this.baseUrl, "").replace(/^\/|\/$/g, "");;
+      let type = "Movies";
+       if (slug.includes("tv")) {
+       type = "TV-Shows";
+    slug =  slug.replace("tv/","")
+      }
+      
+
+      data.push({ title, linkStream, poster, rating, duration, slug ,type, encodeurl });
+    });
+
+    return data;
+  }
+
+  async getStreaming(slug = "", url,type="Movies") {
+
+    if (!this.baseUrl) await this.init();
+       // const decoded = Buffer.from(encodeurl, "base64").toString("utf8");
+    const targetUrl = url || `${this.baseUrl}${slug}`;
+    const response = await fetch(targetUrl, { redirect: "follow" });
+    const html = await response.text();
+    // console.log(html)
+    const $ = cheerio.load(html);
+    $("iframe").each((i, el) => {
+  console.log("Iframe ditemukan:", $(el).attr("src"));
+});
+    if (type === "TV-Shows") {
+    const listSeriesLink = [];
+    $('div.gmr-listseries > a').each((i, el) => {
+      const episodeTitle = $(el).text().trim();
+      const episodeLink = $(el).attr('href');
+      listSeriesLink.push({ episodeTitle, episodeLink });
+    });
+    return { listSeriesLink };
+  }
+    const streamUrls = await getStream(targetUrl);
+
+  // $('div iframe').each((i, el) => {
+  
+  //   // console.log($(el).attr('src'));
+  //   const src = $(el).attr('src');
+  //   if (src) {
+  //     streamUrls.push({
+  //       index: i + 1,
+  //       streamUrl: src
+  //     });
+  //   }
+  // });
+  return { streamUrls };
+  }
+// async getDramaStream(slug = "", player = 1) {
 }
 
+
+// (async () => {
+//   const filmHosting = new hostingHola();
+
+//   // Ganti slug di bawah dengan path film nyata di situs kamu
+//   const result = await filmHosting.getStream('jalan-pulang-2025');
+//   console.log("\n✅ Hasil Akhir:");
+//   console.log(result);
+// })();
+
+
 // const filmHosting = new hostingHola()
-// filmHosting.getIndoMovies()
+// filmHosting.getStream('pabrik-gula-2025')
+
 
 
  module.exports = {filmApik,hostingHola}

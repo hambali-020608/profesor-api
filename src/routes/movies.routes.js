@@ -11,5 +11,6 @@ router.get('/v1/search',movieController.filmApikSearch)
 router.get('/v1/streaming-drama',movieController.filmApikDramaStream)
 router.get('/v1/stream',movieController.filmApikStream)
 router.get('/v2/indo-movie',movieController.hostingHolaIndo)
+router.get('/v2/stream/movie',movieController.hostingHolaStreamMovies)
 
 module.exports = router;
