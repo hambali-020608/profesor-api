@@ -477,11 +477,9 @@ class hostingHola{
     const targetUrl = url || `${this.baseUrl}${slug}`;
     const response = await fetch(targetUrl, { redirect: "follow" });
     const html = await response.text();
+    
     // console.log(html)
     const $ = cheerio.load(html);
-    $("iframe").each((i, el) => {
-  console.log("Iframe ditemukan:", $(el).attr("src"));
-});
     if (type === "TV-Shows") {
     const listSeriesLink = [];
     $('div.gmr-listseries > a').each((i, el) => {
@@ -490,21 +488,19 @@ class hostingHola{
       listSeriesLink.push({ episodeTitle, episodeLink });
     });
     return { listSeriesLink };
+    
   }
-    const streamUrls = await getStream(targetUrl);
+  const listPlayer = []
+  $('ul#gmr-tab li').each((i, el) => {
+    // console.log(el)
+    const playerName = $(el).text().trim();
+  const playerId = $(el).find('a').attr('id'); // ← gunakan .find('a')
+  listPlayer.push({ playerName, playerId });
+  })
 
-  // $('div iframe').each((i, el) => {
-  
-  //   // console.log($(el).attr('src'));
-  //   const src = $(el).attr('src');
-  //   if (src) {
-  //     streamUrls.push({
-  //       index: i + 1,
-  //       streamUrl: src
-  //     });
-  //   }
-  // });
-  return { streamUrls };
+  // console.log("Jumlah Player Tersedia:", getPlayer);
+    const streamUrls = await getStream(targetUrl);
+  return { streamUrls,listPlayer };
   }
 // async getDramaStream(slug = "", player = 1) {
 }
