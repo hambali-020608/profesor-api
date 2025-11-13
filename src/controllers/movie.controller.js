@@ -71,9 +71,10 @@ exports.hostingHolaStreamMovies=async(req,res)=>{
   const url = req.query.url
   const slug = req.query.slug
   const type = req.query.type
+  const player = req.query.player
   
   const hostinghola=new hostingHola()
-  const data = await hostinghola.getStreaming(slug,url,type)
+  const data = await hostinghola.getStreaming(slug,url,type,player)
   res.json(data)
 }
 
