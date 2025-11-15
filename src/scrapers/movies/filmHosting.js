@@ -131,10 +131,11 @@ console.log(ajaxUrl)
     return { listSeriesLink };
     
   }
-  const listPlayer = []
+  // const listPlayer = []
   const idMovie = $('div#muvipro_player_content_id').attr('data-id');
   const StreamingUrl = await this.ajaxMovieRequest(idMovie)
    // === ambil informasi utama ===
+
     const title = $("h1.entry-title").text().trim();
     const description = $(".entry-content p").first().text().trim();
     const rating = $(".gmr-meta-rating").text().trim() || null;
@@ -157,7 +158,7 @@ console.log(ajaxUrl)
 
     // === ambil link download ===
     const downloads = [];
-    $(".download-links a").each((i, el) => {
+    $(".gmr-download-list a").each((i, el) => {
       const link = $(el).attr("href");
       const label = $(el).text().trim();
       downloads.push({ label, link });
@@ -165,9 +166,39 @@ console.log(ajaxUrl)
 
   
   return { idMovie,StreamingUrl
-    , title, description, rating, date,details, downloads,cast
+    , title, description, rating, downloads,cast
   };
   }
+  async searchMovies(query) {
+    if (!this.baseUrl) await this.init();
+    const data = [];
+    const response = await fetch(`${this.baseUrl}?s=${encodeURIComponent(query)}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    $("article.item").each((i, el) => {
+      console.log(el)
+      const title = $(el).find("h2.entry-title").text().trim();
+      const linkStream = $(el).find("a").attr("href");
+      let encodeurl = Buffer.from(linkStream).toString('base64');
+      // const decoded = Buffer.from(encodeurl, "base64").toString("utf8");
+
+      const poster = $(el).find("img").attr("src");
+      const rating = $(el).find("div.gmr-rating-item").text().trim();
+      const duration = $(el).find("div.gmr-duration-item").text().trim();
+      let slug = linkStream.replace(this.baseUrl, "").replace(/^\/|\/$/g, "");;
+      let type = "Movies";
+       if (slug.includes("tv")) {
+       type = "TV-Shows";
+    slug =  slug.replace("tv/","")
+      }
+      
+
+      data.push({ title, linkStream, poster, rating, duration, slug ,type, encodeurl })
+    })
+    return data
+  }
+  
 // async getDramaStream(slug = "", player = 1) {
 }
 

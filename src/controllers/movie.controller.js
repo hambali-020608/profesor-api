@@ -78,3 +78,11 @@ exports.hostingHolaStreamMovies=async(req,res)=>{
   res.json(data)
 }
 
+exports.hostingHolaSearch=async(req,res)=>{
+  const q = req.query.q
+  const hostinghola=new hostingHola()
+  const data = await hostinghola.searchMovies(q)
+  res.json(data)
+  
+}
+
