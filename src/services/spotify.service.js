@@ -47,14 +47,15 @@ class Spotimp3{
   async download(url){
     try{
 const resDownload = await axios.post(
-      "https://spotmp3.app/api/download",
-      { url }, // body (JSON)
+      "https://www.spotmp3.app/api/download",
+      { url }, 
       {
         responseType: "stream",
+        maxRedirects: 5,
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36",
-          Referer: "https://spotmp3.app/",
+          Referer: "https://www.spotmp3.app/",
           "Content-Type": "application/json",
         },
         timeout: 50000,
@@ -64,7 +65,8 @@ const resDownload = await axios.post(
     return resDownload.data
       
 
-    }catch{
+    }catch(error){
+      console.error(error)
 
     }
   }
