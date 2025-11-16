@@ -60,7 +60,7 @@ class hostingHola{
     return data;
   }
 
-async ajaxMovieRequest(postId,player="p2"){
+async ajaxMovieRequest(postId,player){
   await this.init();
 
   const formData = new FormData();
@@ -111,7 +111,7 @@ console.log(ajaxUrl)
 
     
 }
-  async getStreaming(slug = "", url,type="Movies",player) {
+  async getStreaming(slug = "", url,type="Movies",player="p2") {
 
     if (!this.baseUrl) await this.init();
        // const decoded = Buffer.from(encodeurl, "base64").toString("utf8");
@@ -133,21 +133,18 @@ console.log(ajaxUrl)
   }
   // const listPlayer = []
   const idMovie = $('div#muvipro_player_content_id').attr('data-id');
-  const StreamingUrl = await this.ajaxMovieRequest(idMovie)
+  const StreamingUrl = await this.ajaxMovieRequest(idMovie,player)
    // === ambil informasi utama ===
 
     const title = $("h1.entry-title").text().trim();
     const description = $(".entry-content p").first().text().trim();
     const rating = $(".gmr-meta-rating").text().trim() || null;
-    const date = $(".entry-meta time").first().text().trim();
-    const updated = $(".entry-meta time").last().text().trim();
    const cast = [];
      $('[itemprop="actors"] [itemprop="name"]').each((i, el) => {
       const name = $(el).text().trim();
       if (name) cast.push(name);
     });
-    const views = $(".views").text().trim();
-
+   
     // === ambil detail film ===
     const details = {};
     $(".mvic-desc .mvic-info p").each((i, el) => {
@@ -155,7 +152,13 @@ console.log(ajaxUrl)
       const [key, value] = text.split(":").map(s => s.trim());
       if (key && value) details[key.toLowerCase()] = value;
     });
-
+    const players = [];
+    $('a[id^="player"]').each((i, el) => {
+      const playerName = $(el).text().trim();
+      const playerId = $(el).attr("href").replace("#", "");
+      players.push({ playerName,playerId });
+    })
+  
     // === ambil link download ===
     const downloads = [];
     $(".gmr-download-list a").each((i, el) => {
@@ -166,7 +169,7 @@ console.log(ajaxUrl)
 
   
   return { idMovie,StreamingUrl
-    , title, description, rating, downloads,cast
+    , title, description, rating, downloads,cast,players
   };
   }
   async searchMovies(query) {
