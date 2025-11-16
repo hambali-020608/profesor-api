@@ -4,21 +4,21 @@ const {request} = require('undici');
 exports.filmApikBox = async (req, res) => {
    const page = req.query.page
     const data = await filmApik.BoxOfficeApik(page)
-    res.json(data)
+    res.json({data,source:'filmapik'})
 
 };
 
 exports.filmApikTrending = async (req, res) => {
 const page = req.query.page
     const data = await filmApik.TrendingApik(page)
-    res.json(data)
+    res.json({data,source:'filmapik'})
 
 };
 
 exports.filmApikLatest = async (req, res) => {
 const page = req.query.page
     const data = await filmApik.LatestApik(page)
-    res.json(data)  
+    res.json({data,source:'filmapik'})  
 
 };
 
@@ -29,7 +29,7 @@ exports.filmApikDownload = async (req, res) => {
     // if(type !== "TV-Shows"){
     //         res
     // }
-    res.json(data)
+    res.json({data,source:'filmapik'})
    
 };
 
@@ -51,13 +51,13 @@ exports.filmApikStream = async (req, res) => {
 exports.filmApikSearch = async (req, res) => {
    const query = req.query.q
     const data = await filmApik.SearchApik(query)
-    res.json(data)
+    res.json({data,source:'filmapik'})
    
 };
 exports.filmApikDramaStream = async (req, res) => {
    const slug = req.query.slug
     const data = await filmApik.StreamingDrama(slug)
-    res.json(data)
+    res.json({data,source:'filmapik'})
    
 };
 
@@ -65,7 +65,7 @@ exports.hostingHolaIndo=async(req,res)=>{
   const page = req.query.page
   const hostinghola=new hostingHola()
   const data = await hostinghola.getIndoMovies(page)
-  res.json(data)
+  res.json({data,source:'hostinghola'})
 }
 exports.hostingHolaStreamMovies=async(req,res)=>{
   const url = req.query.url
@@ -75,14 +75,14 @@ exports.hostingHolaStreamMovies=async(req,res)=>{
   
   const hostinghola=new hostingHola()
   const data = await hostinghola.getStreaming(slug,url,type,player)
-  res.json(data)
+  res.json({data,source:'hostinghola'})
 }
 
 exports.hostingHolaSearch=async(req,res)=>{
   const q = req.query.q
   const hostinghola=new hostingHola()
   const data = await hostinghola.searchMovies(q)
-  res.json(data)
+  res.json({data,source:'hostinghola'})
   
 }
 
