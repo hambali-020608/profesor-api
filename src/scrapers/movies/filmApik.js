@@ -9,7 +9,7 @@ const filmApik = {
 
   BoxOfficeApik: async (page) => {
     const data = [];
-    const response = await fetch(`https://filmapik.now/category/box-office/page/${page}`);
+    const response = await fetch(`https://filmapik.coupons/category/box-office/page/${page}`);
     const html = await response.text();
     const $ = cheerio.load(html);
   
@@ -30,7 +30,7 @@ const filmApik = {
   },
   TrendingApik: async (page) => {
     let data = [];
-    const response = await fetch(`https://filmapik.now/trending-2/page/${page}`);
+    const response = await fetch(`https://filmapik.coupons/trending-2/page/${page}`);
     const html = await response.text();
     const $ = cheerio.load(html);
     
